@@ -1,9 +1,13 @@
+import requests
+
 from s2t import S2T
 from nlp import NLP
+from t2s import T2S
 from recorder import Recorder
 
 s2t = S2T()
 nlp = NLP()
+t2s = T2S()
 
 
 def process_audio(audio_tensor):
@@ -12,6 +16,13 @@ def process_audio(audio_tensor):
 
     print("Transcription:", transcription)
     print("Intent:", intent)
+
+    if intent == "weather_montpellier":
+        r = requests.get("https://api.tibuzin.do-2021.fr/weather")
+        response = r.json()
+        t2s.say(response["text"])
+    else:
+        t2s.say("Je suis désolé, je n'ai pas compris ce que vous avez dit.")
 
 
 def bootstrap():
