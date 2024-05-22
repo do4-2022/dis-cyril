@@ -1,0 +1,5 @@
+torch
+transformers>=4.30.0
+numpy>=1.23.5
+matplotlib>=3.7.4
+spacy

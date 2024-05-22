@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+torch = "*"
+transformers = ">=4.30.0"
+numpy = ">=1.23.5"
+matplotlib = ">=3.7.4"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
+python_full_version = "3.11.8"
