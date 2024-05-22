@@ -70,6 +70,9 @@ class Recorder:
         self.process(rec)
 
     def process(self, frames):
+        # Stop the stream
+        self.stream.stop_stream()
+
         # Convert the byte data to numpy array
         audio_data = np.frombuffer(b"".join(frames), dtype=np.int16)
 
@@ -94,3 +97,5 @@ class Recorder:
             rms_val = self.rms(input)
             if rms_val > threshold:
                 self.record()
+                # restart the stream
+                self.stream.start_stream()
