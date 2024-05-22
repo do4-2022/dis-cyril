@@ -241,5 +241,5 @@ GTAGS
 TAGS
 
 # models and data
-models
+models/nlp
 data/*.spacy
