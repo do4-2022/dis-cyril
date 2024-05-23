@@ -14,7 +14,7 @@ for cat in cats:
     textcat.add_label(cat)
 
 # load training data
-dir_path = os.path.dirname(os.path.realpath(__file__))
+dir_path = os.getcwd()
 doc_bin = DocBin().from_disk(f"{dir_path}/data/training.spacy")
 docs = list(doc_bin.get_docs(nlp.vocab))
 
@@ -25,7 +25,7 @@ for doc in docs:
     examples.append(example)
 
 # train params
-epochs = 10
+epochs = 3
 
 print(f"Start training for {epochs} epochs ...")
 

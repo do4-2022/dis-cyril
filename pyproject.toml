@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "dis-cyril"
+version = "0.1.0"
+description = ""
+authors = ["RedbeanGit <dubois.julien.mail@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+torch = "^2.3.0"
+transformers = ">=4.30.0"
+numpy = ">=1.23.5"
+matplotlib = ">=3.7.4"
+spacy = "^3.7.4"
+pyaudio = "^0.2.14"
+openwakeword = "^0.6.0"
+gtts = "^2.5.1"
+pydub = "^0.25.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
