@@ -64,10 +64,12 @@ class Engine:
 
             if intent == "weather_montpellier":
                 r = requests.get("https://api.tibuzin.do-2021.fr/weather")
-                response = r.json()
-                t2s.say(response["text"])
+                response: dict[str, str] = r.json()
+                self.t2s.say(response.get("text", ""))  # type: ignore
             else:
-                t2s.say("Je suis désolé, je n'ai pas compris ce que vous avez dit.")
+                self.t2s.say(  # type: ignore
+                    "Je suis désolé, je n'ai pas compris ce que vous avez dit."
+                )
 
     def wake_up(self):
         if self.awake:
