@@ -44,12 +44,14 @@ class Recorder:
             | None
         ) = None,
         on_noise: typing.Callable[[], None] | None = None,
+        on_silence: typing.Callable[[], None] | None = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
     ):
         logger.info("Initializing Recorder...")
 
         self._callback = callback
         self._on_noise = on_noise
+        self._on_silence = on_silence
         self._chunk_size = chunk_size
         self._stream = Recorder.pyaudio_instance.open(
             format=FORMAT,
@@ -106,7 +108,9 @@ class Recorder:
 
                     self.record()
                     logger.info("Silence detected")
-                    self.reset_chunk_size()
+
+                    if self._on_silence:
+                        self._on_silence()
 
             except KeyboardInterrupt:
                 self._stream.stop_stream()

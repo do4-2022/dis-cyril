@@ -21,8 +21,6 @@ class WWD:
         self._model = Model(wakeword_models=[self.model_path])
 
     def detect(self, frame: typing.Iterable[np.ndarray[np.int16, typing.Any]]) -> bool:
-        print(frame)
-
         # convert to numpy array
         prediction: dict[str, float] = self._model.predict(frame)  # type: ignore
         logger.debug(f"Prediction: {prediction}")

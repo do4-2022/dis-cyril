@@ -32,7 +32,10 @@ class Engine:
         self.wwd = WWD(wwd_model_path)
         self.t2s = T2S()
         self.recorder = Recorder(
-            callback=self.process, on_noise=self.on_noise, chunk_size=WWD_SAMPLE_SIZE
+            callback=self.process,
+            on_noise=self.on_noise,
+            on_silence=self.on_silence,
+            chunk_size=WWD_SAMPLE_SIZE,
         )
 
         self.awake = False
@@ -78,9 +81,15 @@ class Engine:
         logger.info("Waking up...")
         self.awake = True
         self.recorder.set_chunk_size(S2T_SAMPLE_SIZE)
-        logger.info("Awake word detection disabled")
+        logger.info("Awake word detection disabled and speech-to-text enabled")
 
     def on_noise(self):
         logger.info("Enabling wake word detection...")
         self.recorder.set_chunk_size(WWD_SAMPLE_SIZE)
         logger.info("Awake word detection enabled")
+
+    def on_silence(self):
+        logger.info("Disabling wake word detection and speech-to-text...")
+        self.awake = False
+        self.recorder.reset_chunk_size()
+        logger.info("Awake word detection and speech-to-text disabled")
