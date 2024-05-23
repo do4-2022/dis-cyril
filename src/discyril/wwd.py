@@ -5,7 +5,7 @@ import typing
 
 from openwakeword.model import Model  # type: ignore
 
-DEFAULT_THRESHOLD = 0.5
+DEFAULT_THRESHOLD = 0.05
 SAMPLE_SIZE = 16000
 
 logger = logging.getLogger(__name__)

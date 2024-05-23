@@ -43,14 +43,12 @@ class Recorder:
             typing.Callable[[typing.Iterable[np.ndarray[np.int16, typing.Any]]], None]
             | None
         ) = None,
-        on_noise: typing.Callable[[], None] | None = None,
         on_silence: typing.Callable[[], None] | None = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
     ):
         logger.info("Initializing Recorder...")
 
         self._callback = callback
-        self._on_noise = on_noise
         self._on_silence = on_silence
         self._chunk_size = chunk_size
         self._stream = Recorder.pyaudio_instance.open(
@@ -60,6 +58,8 @@ class Recorder:
             frames_per_buffer=self._chunk_size,
             input=True,
         )
+
+        self.silence_detection = False
 
         logger.info("Recorder initialized")
 
@@ -94,34 +94,36 @@ class Recorder:
         if self._callback:
             self._callback(audio_data)
 
+    def process_chunk(self, chunk: bytes):
+        audio_data = np.frombuffer(chunk, dtype=np.int16)
+
+        if self._callback:
+            self._callback(audio_data)
+
     def listen(self):
         logger.info("Listening...")
         while True:
             try:
                 chunk = self._stream.read(self._chunk_size)
-                rms_val = self.rms(chunk)
-                if rms_val > THRESHOLD:
-                    logger.info(f"Sound detected ({rms_val})")
 
-                    if self._on_noise:
-                        self._on_noise()
+                if self.silence_detection:
+                    rms_val = self.rms(chunk)
 
-                    self.record()
-                    logger.info("Silence detected")
+                    if rms_val > THRESHOLD:
+                        logger.info(f"Sound detected ({rms_val})")
+                        self.record()
+                        logger.info("Silence detected")
 
-                    if self._on_silence:
-                        self._on_silence()
+                        if self._on_silence:
+                            self._on_silence()
+                else:
+                    self.process_chunk(chunk)
 
             except KeyboardInterrupt:
                 self._stream.stop_stream()
                 self._stream.close()
                 logger.info("Recorder stopped by user")
                 break
-
-    def reset_chunk_size(self):
-        logger.info("Resetting chunk size to default...")
-        self.set_chunk_size(DEFAULT_CHUNK_SIZE)
-        logger.info("Chunk size reset to default")
 
     def set_chunk_size(self, chunk_size: int):
         self._chunk_size = chunk_size
@@ -134,3 +136,4 @@ class Recorder:
             frames_per_buffer=self._chunk_size,
             input=True,
         )
+        print(f"Chunk size set to {chunk_size}")

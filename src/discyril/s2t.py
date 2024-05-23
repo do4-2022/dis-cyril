@@ -6,8 +6,9 @@ from transformers import (  # type: ignore
     Wav2Vec2ForCTC,
     Wav2Vec2Processor,
 )
+from discyril.recorder import RATE as SAMPLE_RATE
 
-SAMPLE_RATE = 1024
+SAMPLE_SIZE = 1024
 
 
 class S2T:

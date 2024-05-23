@@ -6,7 +6,7 @@ import requests
 
 from discyril.nlp import NLP
 from discyril.recorder import Recorder
-from discyril.s2t import S2T, SAMPLE_RATE as S2T_SAMPLE_SIZE
+from discyril.s2t import S2T, SAMPLE_SIZE as S2T_SAMPLE_SIZE
 from discyril.wwd import WWD, SAMPLE_SIZE as WWD_SAMPLE_SIZE
 from discyril.t2s import T2S
 
@@ -33,7 +33,6 @@ class Engine:
         self.t2s = T2S()
         self.recorder = Recorder(
             callback=self.process,
-            on_noise=self.on_noise,
             on_silence=self.on_silence,
             chunk_size=WWD_SAMPLE_SIZE,
         )
@@ -80,16 +79,13 @@ class Engine:
 
         logger.info("Waking up...")
         self.awake = True
+        self.recorder.silence_detection = True
         self.recorder.set_chunk_size(S2T_SAMPLE_SIZE)
         logger.info("Awake word detection disabled and speech-to-text enabled")
 
-    def on_noise(self):
-        logger.info("Enabling wake word detection...")
-        self.recorder.set_chunk_size(WWD_SAMPLE_SIZE)
-        logger.info("Awake word detection enabled")
-
     def on_silence(self):
-        logger.info("Disabling wake word detection and speech-to-text...")
+        logger.info("Sleeping...")
         self.awake = False
-        self.recorder.reset_chunk_size()
-        logger.info("Awake word detection and speech-to-text disabled")
+        self.recorder.silence_detection = False
+        self.recorder.set_chunk_size(WWD_SAMPLE_SIZE)
+        logger.info("Awake word detection enabled and speech-to-text disabled")
